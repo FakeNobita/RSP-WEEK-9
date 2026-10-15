@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsible &amp; Safe AI Systems WEEK-9</title>
+    <link rel="icon" href="favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border: 1px solid #e5e5e5;
+        }
+
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .question-image {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 16px auto;
+            border-radius: 8px;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .option {
+            color: #333333;
+            background-color: #ffffff;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            min-height: 50px;
+            line-height: 1.4;
+        }
+
+        .option:hover {
+            background-color: #f8f8f8;
+        }
+
+        .option-label {
+            color: #333333;
+            font-size: 16px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+            display: block;
+            flex: 1;
+            margin: 0;
+            padding: 0;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+        }
+
+        .option.correct {
+            background-color: #ecfdf5;
+        }
+
+        .option.wrong {
+            background-color: #fef2f2;
+        }
+
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            margin: 0 12px 0 0;
+            padding: 0;
+            flex: 0 0 16px;
+            vertical-align: middle;
+        }
+
+        .feedback {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e5;
+            display: none;
+        }
+
+        .feedback.visible {
+            display: block;
+        }
+
+        .result-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .result-icon.correct {
+            color: #059669;
+        }
+
+        .result-icon.wrong {
+            color: #dc2626;
+        }
+
+        .correct-answer {
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: #f0fdf4;
+            border-left: 4px solid #059669;
+            border-radius: 6px;
+            color: #166534;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+        }
+
+        .score {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .button {
+            background-color: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2563eb;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WEEK-9 (Responsible &amp; Safe AI Systems)</h1>
+        <div id="quiz-container"></div>
+        <div class="controls">
+            <div id="score" class="score"></div>
+            <button id="submit-btn" class="button">Submit Answers</button>
+        </div>
+    </div>
+
+    <script>
+const questions = [
+  {
+    "id": 1,
+    "question": "What is the difference between \"vertical\" and \"horizontal\" AI regulation?",
+    "options": [
+      "Vertical regulates the hardware, while horizontal regulates the software.",
+      "Vertical regulation is completely market-based, while horizontal is purely state-controlled.",
+      "Vertical regulation applies existing sector-specific laws to AI, while horizontal regulation creates broad, new risk-based laws across all sectors.",
+      "Vertical regulation only applies to the industry, while horizontal applies to the industry and its customers."
+    ],
+    "correctAnswer": 2,
+    "explanation": "AI Policies, Regulations, AGI - Part 1 [40:25-43:12] - Vertical regulation tweaks existing laws for specific industries, whereas horizontal regulation attempts to classify and govern the technology itself across all sectors.",
+    "type": "single"
+  },
+  {
+    "id": 2,
+    "question": "Why is data privacy considered a relatively better-understood guardrail compared to model explainability?",
+    "options": [
+      "Explainability has exact mathematical bounds, whereas privacy cannot be measured mathematically.",
+      "Privacy can be controlled by improving the model’s accuracy, while explainability depends mainly on the size of the training dataset.",
+      "Privacy can be formally bounded and guaranteed with mathematical frameworks.",
+      "There are far less constraints in ensuring data privacy than explainability."
+    ],
+    "correctAnswer": 2,
+    "explanation": "AI Policies, Regulations, AGI - Part 2 [14:20-14:50] - Mathematical frameworks like differential privacy or cryptography provide proven security guarantees, explainability is black-box and remains harder to formally bound.",
+    "type": "single"
+  },
+  {
+    "id": 3,
+    "question": "According to the lecture, as AI systems become autonomous agents capable of performing complex tasks independently, what is the main trade-off that occurs regarding human decision-making.",
+    "options": [
+      "Individual human agency decreases as decision-making is delegated to autonomous AI systems.",
+      "Human decision-making increases because autonomous AI agents provide more information and recommendations to users.",
+      "Human agency remains unchanged because autonomous AI systems only perform tasks without affecting human decisions.",
+      "Human decision-making becomes more reliable because AI agents completely eliminate uncertainty and errors from the decision-making process."
+    ],
+    "correctAnswer": 0,
+    "explanation": "AI Policies, Regulations, AGI - Part 2 [33:10-34:00] - Delegating tasks to autonomous agents reduces individual agency over automated decisions.",
+    "type": "single"
+  },
+  {
+    "id": 4,
+    "question": "Which of the following are privacy-preserving training techniques? (Select all that apply.)",
+    "options": [
+      "Model Quantization",
+      "Differential Privacy",
+      "Federated Learning",
+      "Data Augmentation"
+    ],
+    "correctAnswer": [
+      1,
+      2
+    ],
+    "explanation": "Differential Privacy protects individual data by adding carefully calibrated noise during training while maintaining useful model performance. Federated Learning trains models across decentralized devices without requiring the personal data to be centrally collected.",
+    "type": "multi"
+  },
+  {
+    "id": 5,
+    "question": "In structured AI governance, what is defines a “co-regulation” model from from strict-regulation or self-regulation?",
+    "options": [
+      "Companies operate without zero external guidelines or government interaction.",
+      "The government directly dictates every policy of code without interference from the industry.",
+      "The government ensures that consumers have as much responsiblities as companies to follow policy.",
+      "Industries establish policies which are formally recognized and enforced by the government."
+    ],
+    "correctAnswer": 3,
+    "explanation": "AI Policies, Regulations, AGI - Part 2 [49:10-51:06] - Co-regulation combines industry expertise in defining baseline standards with government authorization to enforce them across the industry.",
+    "type": "single"
+  },
+  {
+    "id": 6,
+    "question": "According to the lecture, if copyrighted data is found inside a large AI model and must be removed, what is a major technical challenge?",
+    "options": [
+      "Removing the data may significantly reduce the model’s ability to generalize to unrelated tasks.",
+      "The model may need to be retrained or use specialized unlearning techniques to remove the data’s influence.",
+      "The model may become unstable because removing one data point automatically changes its entire architecture.",
+      "The model may require additional training on the copyrighted data before its influence can be safely removed."
+    ],
+    "correctAnswer": 1,
+    "explanation": "AI Policies, Regulations, AGI - Part 2 [45:45-47:05] - Purging individual data points from large AI models is complex and often requires costly model retraining or complex unlearning algorithms.",
+    "type": "single"
+  },
+  {
+    "id": 7,
+    "question": "According to the discussed AI safety and governance proposals, about how much of an AI model’s development budget should be spent on safety and responsible AI?",
+    "options": [
+      "50% on legal costs",
+      "100% on testing the model after it is released",
+      "10% on AI safety and responsible AI research",
+      "All profits on building newer hardware"
+    ],
+    "correctAnswer": 2,
+    "explanation": "AI Policies, Regulations, AGI - Part 3 [5:35-6:11] - Tristan Harris proposed allocating 10% of model development budgets to safe and responsible AI practices.",
+    "type": "single"
+  },
+  {
+    "id": 8,
+    "question": "According to the lecture, which technical strategy help reduce the energy consumption and environmental footprint of LLM deployment?",
+    "options": [
+      "Routing every simple text query to ultra-large GPU clusters in real time.",
+      "Increasing parameter counts by 10x for routine classification tasks.",
+      "Running duplicate backup models continuously on solar-powered data centers.",
+      "Moving model inference to run on CPUs/Edge devices instead of GPUs."
+    ],
+    "correctAnswer": 3,
+    "explanation": "AI Policies, Regulations, AGI - Part 3 [18:40-20:26] - Running models on CPU/Edge devices makes infrastructure cheaper and environmentally friendly as they require less energy.",
+    "type": "single"
+  },
+  {
+    "id": 9,
+    "question": "How does Back Translation Defense mitigate jailbreak attacks?",
+    "options": [
+      "It takes an unmoderated model output, reverse-infers the prompt that generated it, and runs it through safety filters.",
+      "It translates outputs into multiple foreign languages until a syntax error occurs.",
+      "It automatically rejects any prompt containing more words than the model’s maximum context window.",
+      "It re-encrypts the LLM’s weights after every user interaction."
+    ],
+    "correctAnswer": 0,
+    "explanation": "AI Policies, Regulations, AGI - Part 3 [23:22-25:02] - Back-translation reconstructs the user prompt from the generated output so moderation filters can catch hidden jailbreak attempts.",
+    "type": "single"
+  },
+  {
+    "id": 10,
+    "question": "Which of the following are principles of Responsible AI (RAI)? (Select all that apply.)",
+    "options": [
+      "Fairness",
+      "Explainability",
+      "AI Autonomy",
+      "Accountability",
+      "Fast Deployment",
+      "Privacy"
+    ],
+    "correctAnswer": [
+      0,
+      1,
+      3,
+      5
+    ],
+    "explanation": "Week 9 Lec 45 Lecture Notes [Slide 5] - Fairness, Explainability, Accountability and Privacy are RAI Principles.",
+    "type": "multi"
+  },
+  {
+    "id": 11,
+    "question": "According to the Fairness Tree Framework, which fairness metric is recommended when interventions are punitive and you are most concerned with ensuring predictive equity among people for whom intervention is taken?",
+    "options": [
+      "FN/GS Parity",
+      "FP/GS Pairty",
+      "FDR Parity",
+      "FPR Parity"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Week 9 Lec 45 Lecture Notes [Slide 20] - FDR Parity is used when intervention is punitive (could hurt individuals) and you are most concerned with ensuring predictive equity among people for whom intervention is taken?",
+    "type": "single"
+  },
+  {
+    "id": 12,
+    "question": "According to the systems approach framework for AI design and development, what action immediately follows the step of analyzing the root causes of bias?",
+    "options": [
+      "Measure and detect the bias",
+      "Mitigate the impact through adjusting interventions",
+      "Monitor & Evaluate",
+      "Improve fairness of AI systems"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Week 9 Lec 45 Lecture Notes [Slide 16] - Analyzing the root causes occurs in the Understand step, and the next is the Improve step.",
+    "type": "single"
+  }
+];
+
+let selectedAnswers = {};
+let submitted = false;
+
+function createQuiz() {
+    const quizContainer = document.getElementById('quiz-container');
+
+    questions.forEach(question => {
+        const questionCard = document.createElement('div');
+        questionCard.className = 'question-card';
+
+        const isMultiSelect = Array.isArray(question.correctAnswer);
+
+        questionCard.innerHTML = `
+            <div class="question-text">Q${question.id}. ${question.question}</div>
+            ${question.image ? `<img src="${question.image}" alt="Image for question ${question.id}" class="question-image">` : ''}
+            ${question.type === 'numeric' ? `
+                <div class="options-container">
+                    <input class="numeric-answer" type="number" id="numeric-${question.id}" placeholder="Enter your numerical answer" style="width:100%; padding:12px; border:1px solid #e5e5e5; border-radius:8px; font-size:16px;">
+                </div>
+            ` : `<div class="options-container">
+                ${question.options.map((option, index) => `
+                    <label class="option" data-question="${question.id}" data-option="${index}">
+                        ${isMultiSelect
+                            ? `<input class="answer-control" type="checkbox" name="question${question.id}" value="${index}">`
+                            : `<input class="answer-control" type="radio" name="question${question.id}" value="${index}">`
+                        }
+                        <span class="option-label">${option}</span>
+                    </label>
+                `).join('')}
+            </div>`}
+
+            <div class="feedback" id="feedback-${question.id}">
+                <div class="result-icon">
+                    <span class="icon"></span>
+                    <span class="result-text"></span>
+                </div>
+
+                <div class="correct-answer">
+                    Correct Answer: ${question.explanation}
+                </div>
+            </div>
+        `;
+
+        quizContainer.appendChild(questionCard);
+    });
+
+    document.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', handleOptionSelect);
+    });
+
+    document.getElementById('submit-btn').addEventListener('click', handleSubmit);
+
+    questions.filter(question => question.type === 'numeric').forEach(question => {
+        const numericInput = document.getElementById(`numeric-${question.id}`);
+        numericInput.addEventListener('input', () => {
+            if (!submitted && numericInput.value.trim() !== '') {
+                selectedAnswers[question.id] = numericInput.value.trim();
+            } else {
+                delete selectedAnswers[question.id];
+            }
+        });
+    });
+}
+
+function handleOptionSelect(event) {
+    if (submitted) return;
+
+    const questionId = parseInt(event.currentTarget.dataset.question);
+    const optionIndex = parseInt(event.currentTarget.dataset.option);
+    const question = questions.find(q => q.id === questionId);
+    const isMultiSelect = Array.isArray(question.correctAnswer);
+
+    if (isMultiSelect) {
+        if (!selectedAnswers[questionId]) {
+            selectedAnswers[questionId] = [];
+        }
+
+        const checkbox = event.currentTarget.querySelector('input[type="checkbox"]');
+
+        if (checkbox.checked) {
+            if (!selectedAnswers[questionId].includes(optionIndex)) {
+                selectedAnswers[questionId].push(optionIndex);
+            }
+
+            event.currentTarget.classList.add('selected');
+        } else {
+            selectedAnswers[questionId] = selectedAnswers[questionId].filter(i => i !== optionIndex);
+            event.currentTarget.classList.remove('selected');
+        }
+
+        if (selectedAnswers[questionId].length === 0) {
+            delete selectedAnswers[questionId];
+        }
+    } else {
+        selectedAnswers[questionId] = optionIndex;
+
+        const questionOptions = document.querySelectorAll(
+            `.option[data-question="${questionId}"]`
+        );
+
+        questionOptions.forEach(option => {
+            option.classList.remove('selected');
+        });
+
+        event.currentTarget.classList.add('selected');
+
+        event.currentTarget.querySelector('input[type="radio"]').checked = true;
+    }
+}
+
+function handleSubmit() {
+    if (Object.keys(selectedAnswers).length < questions.length) {
+        alert("Please answer all questions before submitting!");
+        return;
+    }
+
+    submitted = true;
+    let score = 0;
+
+    questions.forEach(question => {
+        let isCorrect;
+
+        if (question.type === 'numeric') {
+            isCorrect = Number(selectedAnswers[question.id]) === question.correctAnswer;
+        } else if (Array.isArray(question.correctAnswer)) {
+            const selected = selectedAnswers[question.id] || [];
+            const expected = [...question.correctAnswer].sort((a, b) => a - b);
+            const actual = [...selected].sort((a, b) => a - b);
+
+            isCorrect =
+                expected.length === actual.length &&
+                expected.every((value, index) => value === actual[index]);
+        } else {
+            isCorrect =
+                selectedAnswers[question.id] === question.correctAnswer;
+        }
+
+        if (isCorrect) {
+            score++;
+        }
+
+        const feedback = document.getElementById(`feedback-${question.id}`);
+        feedback.classList.add('visible');
+
+        const resultIcon = feedback.querySelector('.result-icon');
+        const resultText = feedback.querySelector('.result-text');
+
+        if (isCorrect) {
+            resultIcon.classList.add('correct');
+            resultText.textContent = 'Correct Answer +1';
+        } else {
+            resultIcon.classList.add('wrong');
+            resultText.textContent = 'Wrong Answer +0';
+        }
+
+        const options = document.querySelectorAll(
+            `.option[data-question="${question.id}"]`
+        );
+
+        if (question.type === 'numeric') {
+            const numericInput = document.getElementById(`numeric-${question.id}`);
+            numericInput.disabled = true;
+            numericInput.style.borderColor = isCorrect ? '#059669' : '#dc2626';
+        }
+
+        options.forEach((option, index) => {
+            const correct = Array.isArray(question.correctAnswer)
+                ? question.correctAnswer.includes(index)
+                : index === question.correctAnswer;
+
+            const selected = Array.isArray(question.correctAnswer)
+                ? (selectedAnswers[question.id] || []).includes(index)
+                : index === selectedAnswers[question.id];
+
+            if (correct) {
+                option.classList.add('correct');
+            } else if (selected) {
+                option.classList.add('wrong');
+            }
+        });
+    });
+
+    document.getElementById('score').textContent =
+        `Score: ${score}/${questions.length}`;
+
+    const submitBtn = document.getElementById('submit-btn');
+
+    submitBtn.textContent = 'Try Again';
+
+    submitBtn.removeEventListener('click', handleSubmit);
+    submitBtn.addEventListener('click', resetQuiz);
+}
+
+function resetQuiz() {
+    location.reload();
+}
+
+createQuiz();
+    </script>
+</body>
+</html>
